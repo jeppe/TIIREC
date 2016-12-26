@@ -30,7 +30,6 @@ V, T, S, U, A = [0 for i in range(0, 5)]
 artists, sparseItems, itemsQuery = [0 for i in range(0, 3)]
 
 # define bias and implicit feedback variables
-item_bias, tag_bias = [dict(), dict()]
 item_im, tag_im = [dict(), dict()]
 user_tag_item_im, item_tag_im = [dict(), dict()]
 
@@ -123,7 +122,7 @@ def toStringRecalls(recallsDict):
 	return info
 
 def QueryL2Rank(uid, query, aid):
-	global LEARNRATIO, REGULARIZATION,V,T,S,U,A, item_bias, tag_bias, item_im, tag_im, user_tag_item_im, item_tag_im
+	global LEARNRATIO, REGULARIZATION,V,T,S,U,A, item_im, tag_im, user_tag_item_im, item_tag_im
 	
 	vu = V[uid]
 	ta = T[aid]	
@@ -144,10 +143,6 @@ def QueryL2Rank(uid, query, aid):
 	ab = A[bid]
 	tb = T[bid]
 
-	# bias
-	bj = item_bias[bid]
-	bi = item_bias[aid]	
-	
 	# features with implicit feedback
 	utiim = user_tag_item_im[uid]
 
@@ -183,7 +178,7 @@ def QueryL2Rank(uid, query, aid):
 	# inner-product of sq and ab encoder
 	sqab = np.dot(sq, ab)
 
-	error = np.dot(squ, dhattatb) + np.dot(hatvu, dhattatb) + np.dot(sqaa, hatvu) - np.dot(sqab, hatvu) + bi - bj
+	error = np.dot(squ, dhattatb) + np.dot(hatvu, dhattatb) + np.dot(sqaa, hatvu) - np.dot(sqab, hatvu)
 	try:
 		ep = math.exp(-error)
 		loss = ep / (1 + ep)
@@ -217,10 +212,6 @@ def QueryL2Rank(uid, query, aid):
 
 	A[bid] = ab - LEARNRATIO * (loss * np.array(m) + REGULARIZATION * ab)
 	A[aid] = aa + LEARNRATIO * (loss * np.array(m) - REGULARIZATION * aa)
-
-	# Bias
-	item_bias[aid] = bi + LEARNRATIO * (loss - REGULARIZATION * bi)
-	item_bias[bid] = bj - LEARNRATIO * (loss + REGULARIZATION * bj)
 
 	# Implicit feedback
 	hattijstaij = (dhattatb + stdaabb)
@@ -306,7 +297,7 @@ def map_fnc(user_query):
 		@return
 		 Recall#K [5, 10, 15, 20, 25, 30]
 	"""
-	global reck_list,sparseItems,V,T,S,U,A,item_bias,tag_bias,item_im, tag_im, user_tag_item_im, item_tag_im
+	global reck_list,sparseItems,V,T,S,U,A,item_im, tag_im, user_tag_item_im, item_tag_im
 	
 	uid, query, samples = user_query
 
@@ -341,13 +332,11 @@ def map_fnc(user_query):
 		ta = T[aid]
 		aitdenominator, aitim = item_tag_im[aid]
 		hatta = ta + aitim
-		bi = item_bias[aid]
-
 		aa = A[aid]
 
 		quaua = np.dot(qusr, hatta)
 		qau = np.dot(np.dot(sq , aa), hatvu)
-		score =  quaua + qau + bi
+		score =  quaua + qau
 
 		rankList.append([aid, score])
 
@@ -450,7 +439,7 @@ def load(fp=0):
 		#U - a dictionary includes all users' specific encoding matrices
 		#artists - includes all artists appearing in the training data
 	"""
-	global DIMENSION, item_bias, tag_bias, item_im, tag_im, user_tag_item_im, item_tag_im
+	global DIMENSION, item_im, tag_im, user_tag_item_im, item_tag_im
 
 	V, S, T, U, A = [dict() for i in range(0, 5)]
 
@@ -490,9 +479,6 @@ def load(fp=0):
 
 			
 			U = np.random.uniform(-0.02, 0.02, (DIMENSION,DIMENSION) )
-			
-			item_bias.setdefault(aid, random.random())
-			tag_bias.setdefault(query, random.random())
 
 			item_im.setdefault(aid, np.random.uniform(-0.02, 0.02, DIMENSION))
 			tag_im.setdefault(query, np.random.uniform(-0.02, 0.02, DIMENSION))
