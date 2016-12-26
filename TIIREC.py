@@ -581,7 +581,7 @@ if __name__ == "__main__":
 
 	logging.basicConfig(format = '%(asctime)s:%(levelname)s:%(message)s',
 						level = logging.INFO,
-						filename =  "./logs/{0}_TIIREC++_{1}_RECALLS.log".format(args.dataname.upper(), args.dimension),
+						filename =  "./logs/{0}_TIIREC_{1}_RECALLS.log".format(args.dataname.upper(), args.dimension),
 						filemode = "w")
 
 	TIIREC_PlusPlus(DIMEN=args.dimension,
