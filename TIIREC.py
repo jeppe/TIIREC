@@ -557,17 +557,16 @@ def parse_args():
 	'''
 	parser = argparse.ArgumentParser(description="Run TIIREC")
 
-	parser.add_argument('--lr', type = float, default = 0.001)
-	parser.add_argument('--reg', type = float, default = 0.01)
+	parser.add_argument('--lr', type = float, default = 0.001, help="learning rate")
+	parser.add_argument('--reg', type = float, default = 0.01, help="regularization parameter")
 
-	parser.add_argument('--trainpath', default = "your train dataset path")
-	parser.add_argument('--testpath', default = "your test dataset path")
-	parser.add_argument('--dataname', default = "your data set name")
-	parser.add_argument('--dimension', type=int, default=10)
-	parser.add_argument('--k', type=int, default=10)
-	parser.add_argument('--sparse_items_threshold', type=int, default=5)
-	parser.add_argument('--maxepoch', type=int, default=100)
-	parser.add_argument('--workers', type=int, default=6)
+	parser.add_argument('--trainpath', default = "./data/train.data", help="your training data path")
+	parser.add_argument('--testpath', default = "./data/test.data", help = "your test dataset path")
+	parser.add_argument('--dataname', default = "unknown", help = "your data set name")
+	parser.add_argument('--dimension', type=int, default=10, help = "number of dimension")
+	parser.add_argument('--sparse_items_threshold', type=int, default=5, help="threshold to define sparse items")
+	parser.add_argument('--maxepoch', type=int, default=100, help = "maximum iterations")
+	parser.add_argument('--workers', type=int, default=6, help = "number of parallel processes")
 	
 	return parser.parse_args()
 
