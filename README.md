@@ -3,8 +3,6 @@ TIIREC is a tensor approach for tag-driven item recommendation. This repository 
 
 You could type "python TIIREC.py -h" to check the meaning of each paramters.
 
-Type following commands in the terminal to run this program.
+Type following commands in the terminal to run this program. You could find the evaluation result at "logs" director.
 > python TIIREC.py --trainpath ./data/train.data --testpath ./data/test.data --dimension 10
-
-
 
