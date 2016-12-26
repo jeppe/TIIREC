@@ -29,7 +29,7 @@ V, T, S, U, A = [0 for i in range(0, 5)]
 
 artists, sparseItems, itemsQuery = [0 for i in range(0, 3)]
 
-# define bias and implicit feedback variables
+# define implicit feedback variables
 item_im, tag_im = [dict(), dict()]
 user_tag_item_im, item_tag_im = [dict(), dict()]
 
@@ -134,6 +134,7 @@ def QueryL2Rank(uid, query, aid):
 
 	modelA = len(artists) - 1
 
+	# bayesian personalized sampling
 	while True:
 		index = random.randint(0, modelA)
 		bid = artists[index]
